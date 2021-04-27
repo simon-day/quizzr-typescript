@@ -1,0 +1,13 @@
+select {
+  margin: 20px;
+  width: 120px;
+  border-radius: 8px;
+  font-size: 15px;
+  text-align: center;
+  text-align-last: center;
+  border: 1px solid #ccc;
+  height: 34px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}

@@ -6,6 +6,7 @@ import { fetchQuizQuestions } from "./API";
 import { Difficulty, QuestionState } from "./API";
 // Styles
 import { GlobalStyle, Wrapper } from "./App.styles";
+import DifficultySelect from "./components/DifficultySelect";
 
 export type AnswerObject = {
   question: string;
@@ -19,6 +20,7 @@ const TOTAL_QUESTIONS = 10;
 const App = () => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<QuestionState[]>([]);
+  const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.EASY);
   const [number, setNumber] = useState(0);
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
   const [score, setScore] = useState(0);
@@ -27,10 +29,7 @@ const App = () => {
   const startTrivia = async () => {
     setLoading(true);
     setGameOver(false);
-    const newQuestions = await fetchQuizQuestions(
-      TOTAL_QUESTIONS,
-      Difficulty.EASY
-    );
+    const newQuestions = await fetchQuizQuestions(TOTAL_QUESTIONS, difficulty);
 
     setQuestions(newQuestions);
     setScore(0);
@@ -69,15 +68,37 @@ const App = () => {
     }
   };
 
+  const difficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = e.currentTarget.value;
+    console.log("selected ", selected);
+
+    switch (selected) {
+      case "easy":
+        setDifficulty(Difficulty.EASY);
+        break;
+      case "medium":
+        setDifficulty(Difficulty.MEDIUM);
+        break;
+      case "hard":
+        setDifficulty(Difficulty.HARD);
+        break;
+      default:
+        setDifficulty(Difficulty.EASY);
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
       <Wrapper>
         <h1>Quizzr</h1>
         {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
-          <button className="start" onClick={startTrivia}>
-            Start
-          </button>
+          <>
+            <DifficultySelect callback={difficultyChange} />
+            <button className="start" onClick={startTrivia}>
+              Start
+            </button>
+          </>
         ) : null}
         {!gameOver ? <p className="score">Score: {score}</p> : null}
         {loading && <div className="loader">Loading...</div>}
